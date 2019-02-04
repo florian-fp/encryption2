@@ -63,7 +63,7 @@ public class VigenereCipher {
     // unit testing of the decrypt method
     public static void testDecryptSimple(){
         String encrypted = "XNYGI TC. Febxrx. JYNYWX'X bhyxp.  Jynxv BOBRHP, JQFNX, DHHYY";
-        int [] key = new int [5]; key[0]=5; key[1]=2; key[2]=20; key[3]=19; key[4]=4;
+        int [] key = new int [5]; key[0]=5; key[1]=11; key[2]=20; key[3]=19; key[4]=4;
         //String encrypted = "aa";
         //int [] key = new int[2]; key[0]=5; key[1]=5;
         char mostCommonLetter = 'e';

@@ -112,7 +112,7 @@ public class CaesarCracker {
     public static void decodingTest(){
         System.out.println("--- DecodingTest is running ---");
         //String original = "This is a test! eee";
-        String fileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/com/company/originalText.txt";
+        String fileName = "./src/com/company/originalText.txt";
         try {
             BufferedReader bf = new BufferedReader(new FileReader(fileName));
             String originalText = "";

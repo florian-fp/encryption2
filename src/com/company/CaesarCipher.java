@@ -6,11 +6,11 @@ import java.util.HashMap;
 public class CaesarCipher {
 
     // ------------------------------- constructor ------------------------------------
-    private char [] alphabet;
+    private String alphabet;
     private int key;
 
     public CaesarCipher (int N) {
-        alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        alphabet = "abcdefghijklmnopqrstuvwxyz".substring(N, 26)+"abcdefghijklmnopqrstuvwxyz".substring(0, N);//.toCharArray();
         key = N;
     }
 
@@ -18,36 +18,53 @@ public class CaesarCipher {
     // ---------------------------  helper functions --------------------------------------
 
     // return a HashMap<original alphabet, shifted alphabet> where the shifted alphabet is shifted by N vs. the original one
-    public HashMap<Character, Character> shiftAlphabet(){
-        HashMap<Character, Character> originalToShifted = new HashMap<>();
-        for (int i=0; i<this.alphabet.length; i++){
-            int newIndex = (i + this.alphabet.length - this.key)% this.alphabet.length;
-            originalToShifted.put(this.alphabet[i], this.alphabet[newIndex]);
-        }
-        return originalToShifted;
-    }
+//    public HashMap<Character, Character> shiftAlphabet(){
+//        HashMap<Character, Character> originalToShifted = new HashMap<>();
+//        for (int i=0; i<this.alphabet.length; i++){
+//            int newIndex = (i + this.alphabet.length - this.key)% this.alphabet.length;
+//            originalToShifted.put(this.alphabet[i], this.alphabet[newIndex]);
+//        }
+//        return originalToShifted;
+//    }
 
+    // abcdefghijklmnopqrstuvwxyz
+    //
     // ---------------------------- callable methods ------------------------------------
 
     // return the encrypted String message with the CaesarCipher class key
-    public String encrypt(String original){
-        // returns the String original shifted by N in the alphabet backwards
-        HashMap<Character, Character> originalToShifted = shiftAlphabet();
-        char [] shiftedWord = original.toLowerCase().toCharArray();
-        char [] originalWord = original.toLowerCase().toCharArray();
+//    public String encrypt(String original){
+//        // returns the String original shifted by N in the alphabet backwards
+//        HashMap<Character, Character> originalToShifted = shiftAlphabet();
+//        char [] shiftedWord = original.toLowerCase().toCharArray();
+//        char [] originalWord = original.toLowerCase().toCharArray();
+//
+//        for (int i=0; i<originalWord.length; i++){
+//            Character newLetter = originalToShifted.get(originalWord[i]);
+//            if (newLetter != null){
+//                //System.out.println("Original: " + originalWord[i] + "- shifted: " + newLetter);
+//                shiftedWord[i] = newLetter;
+//            }
+//            else{
+//                //System.out.println("Original: " + originalWord[i] + " - shifted: " + originalWord[i]);
+//                shiftedWord[i] = originalWord[i];
+//            }
+//        }
+//        return String.valueOf(shiftedWord);
+//    }
 
-        for (int i=0; i<originalWord.length; i++){
-            Character newLetter = originalToShifted.get(originalWord[i]);
-            if (newLetter != null){
-                //System.out.println("Original: " + originalWord[i] + "- shifted: " + newLetter);
-                shiftedWord[i] = newLetter;
+    public String encrypt(String original){
+        original = original.toLowerCase();
+        String shifted = "";
+        for (int i = 0; i < original.length(); i++){
+            if (original.charAt(i) >= 'a' && original.charAt(i) <= 'z') {
+                int index = (int) original.charAt(i) - (int) 'a';
+                shifted += this.alphabet.charAt(index);
             }
             else{
-                //System.out.println("Original: " + originalWord[i] + " - shifted: " + originalWord[i]);
-                shiftedWord[i] = originalWord[i];
+                shifted += original.charAt(i);
             }
         }
-        return String.valueOf(shiftedWord);
+        return shifted;
     }
 
     // return the decrypted String message with the CaesarCipher class key
@@ -65,7 +82,7 @@ public class CaesarCipher {
 
     public static void testEncryptAndDecrypt(){
         try {
-            String encryptedFileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/com/company/romeo.txt";
+            String encryptedFileName = "./src/com/company/romeo.txt";
             FileReader reader = new FileReader(encryptedFileName);
             BufferedReader bfReader = new BufferedReader(reader);
 
