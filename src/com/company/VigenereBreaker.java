@@ -1,6 +1,5 @@
 package com.company;
 
-import javax.print.DocFlavor;
 import java.io.*;
 import java.util.*;
 
@@ -9,7 +8,7 @@ public class VigenereBreaker {
     // ------------------------------- constructor ------------------------------------
 
     private char [] alphabet;
-    private String dictionnaryPath = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/";
+    private String dictionnaryPath = "./src/dictionaries/";
 
     public VigenereBreaker(){
         alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -149,21 +148,16 @@ public class VigenereBreaker {
     }
 
     // return the Key of the maximum value in a Hashmap<Integer, Integer>
-    public int [] getMaxEntry(HashMap<Integer, Integer> wordCount){
+    public Map.Entry<Integer, Integer> getMaxEntry(HashMap<Integer, Integer> wordCount){
 
-        int [] output = new int[2];
-
-        // klength tracker
-        output[0] = 0;
-
+        Map.Entry<Integer, Integer> output = new AbstractMap.SimpleEntry<Integer, Integer>(0, 0);
         // maxCounter
-        output[1] = 0;
+        int maxCounter = 0;
 
         for (Map.Entry<Integer, Integer> entry : wordCount.entrySet()){
-            if (entry.getValue()>output[1]){
-                output[0] = entry.getKey();
-                output[1] = entry.getValue();
-                }
+            if (entry.getValue()>maxCounter){
+                output = entry;
+            }
         }
         return output;
     }
@@ -199,14 +193,14 @@ public class VigenereBreaker {
     }
 
     // return the 2 values (in a hashmap) <int klength, int countWords> for a given fileName using a given language VigenereBreaker
-    public int [] getVigenereKey(String fileName, String dictionnaryFileName, char mostCommon) {
+    public Map.Entry<Integer, Integer> getVigenereKey(String fileName, String dictionnaryFileName, char mostCommon) {
 
         VigenereBreaker vb = new VigenereBreaker();
         HashMap<Integer, String> decryptedAllKeys = vb.breakVigenereAllKeys(fileName, mostCommon);
         HashMap<Integer, Integer> countWords = vb.countWords(decryptedAllKeys, dictionnaryFileName);
         System.out.println("countWords: " + countWords);
 
-        int [] maxOutput = getMaxEntry(countWords);
+        Map.Entry<Integer, Integer> maxOutput = getMaxEntry(countWords);
         return maxOutput;
     }
 
@@ -225,16 +219,16 @@ public class VigenereBreaker {
             System.out.println(" --------- Language: " + language + " -------------");
             String dictionnaryFileName = dictionnaryPath + language;
             char mostCommon = getMostCommon(buildDictionnary(dictionnaryFileName));
-            int [] maxOutput = getVigenereKey(fileName, dictionnaryFileName, mostCommon);
-            int maxWordCounter = maxOutput[1];
+            Map.Entry<Integer, Integer> maxOutput = getVigenereKey(fileName, dictionnaryFileName, mostCommon);
+            int maxWordCounter = maxOutput.getValue();
 
             if (maxWordCounter > maxWords){
-                klength = maxOutput[0];
+                klength = maxOutput.getKey();
                 maxWords = maxWordCounter;
                 encryptedLanguage = language;
             }
 
-            System.out.println("klength for current language: " + maxOutput[0] + " - with wordCount: " + maxOutput[1]);
+            System.out.println("klength for current language: " + maxOutput.getKey() + " - with wordCount: " + maxOutput.getValue());
             System.out.println("overall klength: " + klength + " - language: " + encryptedLanguage);
             System.out.println();
         }
@@ -258,9 +252,6 @@ public class VigenereBreaker {
         key[2] = 12;
         key[3] = 4;
 
-        String dictionnaryFileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/English";
-        char mostCommon = 'e';
-
         VigenereBreaker vb = new VigenereBreaker();
 
         String slice = vb.sliceString("abcdefghijklm", 3, 5);
@@ -271,8 +262,7 @@ public class VigenereBreaker {
     public static void testTryKeyLength(){
         try {
             // read fileName
-            String fileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/English";
-            String dictionnaryFileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/English";
+            String fileName = "./src/com/company/encryptedFlute.txt";
             char mostCommon = 'e';
 
             BufferedReader bf = new BufferedReader(new FileReader(fileName));
@@ -302,7 +292,6 @@ public class VigenereBreaker {
 
     // unit testing buildDictionnary
     public static void testBuildDictionnary() {
-        String fileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/English";
         String language = "French";
         char mostCommon = 'e';
 
@@ -330,20 +319,19 @@ public class VigenereBreaker {
 
     // unit testing of getVigenereKeySingleLanguage
     public static void testBreakVigenereSingleLangugage(){
-        String fileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/com/company/encryptedFlute.txt";
-        String dictionnaryFileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/dictionaries/English";
+        String fileName = "./src/com/company/encryptedFlute.txt";
+        String dictionnaryFileName = "./src/dictionaries/English";
         char mostCommon = 'e';
 
         VigenereBreaker vb = new VigenereBreaker();
-        int [] output;
-        output = vb.getVigenereKey(fileName, dictionnaryFileName, mostCommon);
-        System.out.println("klength: " + output[0] + " - Words from dictionnary: " + output[1]);
+        Map.Entry<Integer, Integer> output = vb.getVigenereKey(fileName, dictionnaryFileName, mostCommon);
+        System.out.println("klength: " + output.getKey() + " - Words from dictionnary: " + output.getValue());
     }
 
     // unit testing of getVigenereKeyMultipleLanguage
     public static void testBreakVigenereMultipleLanguage(){
         ArrayList<String> languages = new ArrayList<String>(Arrays.asList("English", "French", "German", "Italian", "Danish", "Dutch"));
-        String fileName = "/Users/florianfontaine-papion/Google Drive/1 - Learning/Software Development (Coursera)/CaesarCipher/src/com/company/encryptedFlute.txt";
+        String fileName = "./src/com/company/encryptedFlute.txt";
 
         VigenereBreaker vb = new VigenereBreaker();
         int [] output = vb.getVigenereKeyMultipleLanguage(fileName, languages);
